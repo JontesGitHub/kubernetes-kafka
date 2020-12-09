@@ -1,21 +1,28 @@
 package mono.monolith.car_service.controller;
 
 import lombok.RequiredArgsConstructor;
-import mono.monolith.event.EventPublisher;
-import mono.monolith.event.model.PaymentSuccededEvent;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import mono.monolith.car_service.controller.response.CarResponse;
+import mono.monolith.car_service.model.Car;
+import mono.monolith.car_service.service.CarService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 public class CarController {
 
-    private final EventPublisher eventPublisher;
+    private final CarService carService;
 
 
     @GetMapping("/cars")
-    public String testKafka() {
-        eventPublisher.publish("test3", new PaymentSuccededEvent("hello"));
-        return "event sent";
+    public List<CarResponse> getAllCars() {
+        return carService.getAllCars();
+    }
+
+    @PostMapping("/cars")
+    public String addCar(@RequestBody Car car) {
+        carService.saveCar(car);
+        return "car saved";
     }
 }

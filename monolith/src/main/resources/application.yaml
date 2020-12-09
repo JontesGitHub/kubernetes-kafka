@@ -18,5 +18,14 @@
 #      properties:
 #        "[spring.json.add.type.headers]": false
 
+topic:
+  payment:
+    successful: topic.payment.successful
+
+
 kafka-bootstap-server: localhost:9092
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://mongodb:jontesdb@person-webservice.bdj12.mongodb.net/car_rental_db?retryWrites=true&w=majority
 
