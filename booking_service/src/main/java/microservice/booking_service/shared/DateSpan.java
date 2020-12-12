@@ -1,4 +1,4 @@
-package mono.monolith.shared;
+package microservice.booking_service.shared;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
