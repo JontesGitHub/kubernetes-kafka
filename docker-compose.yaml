@@ -17,3 +17,28 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+
+#  car:
+#    image: 'car_service:0.0.1-SNAPSHOT'
+#    ports:
+#      - 8081:8081
+#    environment:
+#      - DB_URL=mongodb+srv://mongodb:jontesdb@person-webservice.bdj12.mongodb.net/car_rental_db?retryWrites\=true&w\=majority
+#    depends_on:
+#      - kafka
+#
+#  booking:
+#    image: 'booking_service:0.0.1-SNAPSHOT'
+#    ports:
+#      - 8082:8082
+#    environment:
+#      - DB_URL=mongodb+srv://mongodb:jontesdb@person-webservice.bdj12.mongodb.net/car_rental_db?retryWrites\=true&w\=majority
+#    depends_on:
+#      - kafka
+#
+#  payment:
+#    image: 'payment_service:0.0.1-SNAPSHOT'
+#    ports:
+#      - 8083:8083
+#    depends_on:
+#      - kafka

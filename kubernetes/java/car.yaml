@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car
+  labels:
+    app: car
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:
+        car
+  template:
+    metadata:
+      labels:
+        app: car
+    spec:
+      containers:
+      - name: car
+        image: car_service:0.0.1-SNAPSHOT
+        ports:
+        - containerPort: 8081
+        env:
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: mongo-atlas-secret
+              key: db_url
+#        - name: DB_USERNAME
+#          valueFrom:
+#            secretKeyRef:
+#              name: mongodb-secret
+#              key: username
+#        - name: DB_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              name: mongodb-secret
+#              key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: car-service
+spec:
+  selector:
+    app: car
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30081
