@@ -19,7 +19,13 @@ spec:
         - name: payment
           image: payment_service:0.0.1-SNAPSHOT
           ports:
-            - containerPort: 8083
+          - containerPort: 8083
+          env:
+          - name: KAFKA_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: kafka-configmap
+                key: kafka_host
 ---
 apiVersion: v1
 kind: Service
