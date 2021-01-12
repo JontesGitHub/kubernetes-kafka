@@ -10,6 +10,7 @@ import microservice.payment_service.shared.DateSpan;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentSucceededEvent extends Event {
+    private String paymentId;
     private String carId;
     private DateSpan dateSpan;
 }

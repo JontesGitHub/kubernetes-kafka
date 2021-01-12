@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway
+  # namespace: ingress-nginx
+spec:
+  rules:
+  - host: jontes-cars.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/cars"
+        backend:
+          service:
+            name: car-service
+            port:
+              number: 8081
+      - pathType: Prefix
+        path: "/bookings"
+        backend:
+          service:
+            name: booking-service
+            port:
+              number: 8082
+      - pathType: Prefix
+        path: "/payments"
+        backend:
+          service:
+            name: payment-service
+            port:
+              number: 8083

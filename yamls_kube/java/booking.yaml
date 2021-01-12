@@ -49,9 +49,9 @@ metadata:
 spec:
   selector:
     app: booking
-  type: LoadBalancer
+#  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8082
       targetPort: 8082
-      nodePort: 30082
+#      nodePort: 30082
