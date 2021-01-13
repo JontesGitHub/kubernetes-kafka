@@ -28,4 +28,10 @@ public class BookingController {
         return bookingService.getAllCurrentBookings();
     }
 
+    @DeleteMapping("/bookings/{bookingId}")
+    public String cancelBooking(@PathVariable String bookingId) throws Exception {
+        bookingService.cancelBooking(bookingId);
+        return "booking is canceled";
+    }
+
 }

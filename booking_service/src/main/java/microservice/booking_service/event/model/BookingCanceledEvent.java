@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingCanceledEvent extends Event {
-    private String message;
+    private String paymentId;
 }

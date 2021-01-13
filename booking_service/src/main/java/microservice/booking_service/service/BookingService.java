@@ -1,10 +1,14 @@
 package microservice.booking_service.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import microservice.booking_service.event.EventPublisher;
+import microservice.booking_service.event.model.BookingCanceledEvent;
 import microservice.booking_service.event.model.PaymentSucceededEvent;
 import microservice.booking_service.model.Booking;
 import microservice.booking_service.repository.BookingRepository;
 import microservice.booking_service.shared.DateSpan;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,7 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class BookingService {
 
+    @Value("${topic.booking.canceled}")
+    private String topic;
+
     private final BookingRepository bookingRepository;
+    private final EventPublisher eventPublisher;
 
     public void handleIncomingEvent(PaymentSucceededEvent event) {
         saveBooking(new Booking(event));
@@ -40,6 +48,15 @@ public class BookingService {
     public List<Booking> getAllCurrentBookings() {
         List<Booking> bookings = bookingRepository.findAll();
         return filterOldBookings(bookings);
+    }
+
+    public void cancelBooking(String bookingId) throws Exception {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new Exception("Requested booking id does not exist."));
+
+        eventPublisher.publish(topic, new BookingCanceledEvent(booking.getPaymentId()));
+
+        bookingRepository.delete(booking);
     }
 
     private void saveBooking(Booking booking) {

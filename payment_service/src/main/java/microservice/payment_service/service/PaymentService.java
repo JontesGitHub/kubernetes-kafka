@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import microservice.payment_service.controller.request.PaymentRequest;
 import microservice.payment_service.event.EventPublisher;
+import microservice.payment_service.event.model.BookingCanceledEvent;
+import microservice.payment_service.event.model.PaymentSucceededEvent;
 import microservice.payment_service.model.Payment;
 import microservice.payment_service.model.Status;
 import microservice.payment_service.repository.PaymentRepository;
@@ -34,9 +36,23 @@ public class PaymentService {
 
     private final int PRICEPERDAY = 500;
 
+    public void handleIncomingEvent(BookingCanceledEvent event) {
+        paymentRepository.findById(event.getPaymentId())
+                .ifPresentOrElse(
+                        payment -> repayPayment(payment),
+                        () -> log.error("No payment found by id: {} from BookingCanceledEvent.", event.getPaymentId())
+                );
+    }
+
+    private void repayPayment(Payment payment) {
+        log.info("Payment with ID: {}, was repaid to Card: {}, by amount: {}", payment.getId(), payment.getCardNr(), payment.getAmount());
+        payment.setStatus(Status.REPAID);
+        paymentRepository.save(payment);
+    }
+
     public void createPayment(PaymentRequest paymentRequest) throws ResponseStatusException {
         //TODO: is car available at the dateSpan ? ok : throw err
-        isCarAvailableToRent(paymentRequest.getCarId(), paymentRequest.getDateSpan());
+//        isCarAvailableToRent(paymentRequest.getCarId(), paymentRequest.getDateSpan());
 
         Payment payment = new Payment();
 
@@ -53,8 +69,8 @@ public class PaymentService {
         payment.setCardNr(paymentRequest.getCardNr());
         Payment savedPayment = paymentRepository.save(payment);
 
-        log.info(paymentRequest.toString());
-//        eventPublisher.publish(topic, new PaymentSucceededEvent(savedPayment.getId(), paymentRequest.getCarId(), paymentRequest.getDateSpan()));
+//        log.info(paymentRequest.toString());
+        eventPublisher.publish(topic, new PaymentSucceededEvent(savedPayment.getId(), paymentRequest.getCarId(), paymentRequest.getDateSpan()));
     }
 
     private int calculateAmount(DateSpan dateSpan) {
@@ -67,7 +83,7 @@ public class PaymentService {
         if (!isCardValid(cardNr)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment failed, invalid cardNr");
         }
-        log.info(String.format("Card: %s was charged with %d", cardNr, amount));
+        log.info("Card: {} was charged with {}", cardNr, amount);
         return true;
     }
 
