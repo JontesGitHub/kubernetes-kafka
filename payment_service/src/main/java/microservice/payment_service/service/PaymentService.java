@@ -4,14 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import microservice.payment_service.controller.request.PaymentRequest;
 import microservice.payment_service.event.EventPublisher;
-import microservice.payment_service.event.model.PaymentSucceededEvent;
 import microservice.payment_service.model.Payment;
 import microservice.payment_service.model.Status;
 import microservice.payment_service.repository.PaymentRepository;
 import microservice.payment_service.shared.DateSpan;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.regex.Matcher;
@@ -24,13 +26,15 @@ public class PaymentService {
 
     @Value("${topic.payment.successful}")
     private String topic;
+    @Value("${booking-host-url}")
+    private final String bookingHostUrl;
 
     private final EventPublisher eventPublisher;
     private final PaymentRepository paymentRepository;
 
     private final int PRICEPERDAY = 500;
 
-    public void createPayment(PaymentRequest paymentRequest) {
+    public void createPayment(PaymentRequest paymentRequest) throws ResponseStatusException {
         //TODO: is car available at the dateSpan ? ok : throw err
         isCarAvailableToRent(paymentRequest.getCarId(), paymentRequest.getDateSpan());
 
@@ -49,9 +53,8 @@ public class PaymentService {
         payment.setCardNr(paymentRequest.getCardNr());
         Payment savedPayment = paymentRepository.save(payment);
 
-        //TODO: send successfulPaymentEvent
         log.info(paymentRequest.toString());
-        eventPublisher.publish(topic, new PaymentSucceededEvent(savedPayment.getId(), paymentRequest.getCarId(), paymentRequest.getDateSpan()));
+//        eventPublisher.publish(topic, new PaymentSucceededEvent(savedPayment.getId(), paymentRequest.getCarId(), paymentRequest.getDateSpan()));
     }
 
     private int calculateAmount(DateSpan dateSpan) {
@@ -64,7 +67,7 @@ public class PaymentService {
         if (!isCardValid(cardNr)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment failed, invalid cardNr");
         }
-
+        log.info(String.format("Card: %s was charged with %d", cardNr, amount));
         return true;
     }
 
@@ -76,5 +79,23 @@ public class PaymentService {
 
     private void isCarAvailableToRent(String carId, DateSpan dateSpan) {
         // TODO: Make http anrop to bookings
+
+        Boolean isAvailable = WebClient.create()
+                .post()
+                .uri(uriBuilder ->
+                    uriBuilder
+                            .host(bookingHostUrl)
+                            .path("/bookings/cars/{carId}")
+                            .build(carId)
+                )
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(dateSpan, DateSpan.class)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
+
+        if(!isAvailable) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment failed, Car is not available at the requested dates");
+        }
     }
 }
