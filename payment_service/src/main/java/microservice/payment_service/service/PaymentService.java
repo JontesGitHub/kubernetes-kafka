@@ -28,8 +28,8 @@ public class PaymentService {
 
     @Value("${topic.payment.successful}")
     private String topic;
-    @Value("${booking-host-url}")
-    private final String bookingHostUrl;
+//    @Value("${booking-host-url}")
+//    private final String bookingHostUrl;
 
     private final EventPublisher eventPublisher;
     private final PaymentRepository paymentRepository;
@@ -96,22 +96,22 @@ public class PaymentService {
     private void isCarAvailableToRent(String carId, DateSpan dateSpan) {
         // TODO: Make http anrop to bookings
 
-        Boolean isAvailable = WebClient.create()
-                .post()
-                .uri(uriBuilder ->
-                    uriBuilder
-                            .host(bookingHostUrl)
-                            .path("/bookings/cars/{carId}")
-                            .build(carId)
-                )
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(dateSpan, DateSpan.class)
-                .retrieve()
-                .bodyToMono(Boolean.class)
-                .block();
-
-        if(!isAvailable) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment failed, Car is not available at the requested dates");
-        }
+//        Boolean isAvailable = WebClient.create()
+//                .post()
+//                .uri(uriBuilder ->
+//                    uriBuilder
+//                            .host(bookingHostUrl)
+//                            .path("/bookings/cars/{carId}")
+//                            .build(carId)
+//                )
+//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+//                .body(dateSpan, DateSpan.class)
+//                .retrieve()
+//                .bodyToMono(Boolean.class)
+//                .block();
+//
+//        if(!isAvailable) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment failed, Car is not available at the requested dates");
+//        }
     }
 }

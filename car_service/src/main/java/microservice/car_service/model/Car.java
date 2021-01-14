@@ -7,5 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Car {
     private String id;
+    private Brand brand;
     private String model;
 }
