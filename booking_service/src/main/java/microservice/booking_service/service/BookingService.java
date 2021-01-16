@@ -1,7 +1,6 @@
 package microservice.booking_service.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import microservice.booking_service.event.EventPublisher;
 import microservice.booking_service.event.model.BookingCanceledEvent;
 import microservice.booking_service.event.model.PaymentSucceededEvent;
@@ -60,12 +59,12 @@ public class BookingService {
     }
 
     private void saveBooking(Booking booking) {
-        Booking savedBooking = bookingRepository.save(booking);
+        bookingRepository.save(booking);
         // New Booking Added Event?
     }
 
     private List<DateSpan> getBookingDatesByCar(String carId) {
-        List<Booking> bookings = bookingRepository.findByCarId();
+        List<Booking> bookings = bookingRepository.findAllByCarId(carId);
 
         return filterOldBookings(bookings).stream()
                 .map(Booking::getDateSpan)
@@ -85,5 +84,9 @@ public class BookingService {
                                 (b.getDateSpan().getFrom().isBefore(now) && b.getDateSpan().getTo().isAfter(now))
                 )
                 .collect(Collectors.toList());
+    }
+
+    public List<Booking> getBookingsByUser(String userId) {
+        return bookingRepository.findAllByUserId(userId);
     }
 }

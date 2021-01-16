@@ -39,15 +39,6 @@ public class UserController {
         return "Successful Registration.";
     }
 
-    @GetMapping("/users/{username}/bookings")
-    public List<UserBooking> getBookingsByUsername(@RequestParam String username) {
-        try {
-            return userService.getBookingsByUsername(username);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> validationExceptionHandler(MethodArgumentNotValidException ex) {

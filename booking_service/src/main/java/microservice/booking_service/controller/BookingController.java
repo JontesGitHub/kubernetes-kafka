@@ -18,12 +18,12 @@ public class BookingController {
         return bookingService.getAllBookings();
     }
 
-    @PostMapping("/bookings/cars/{carId}/available")
+    @PostMapping("/bookings/cars/{carId}/available") // internal check from payment service
     public Boolean checkAvailabilityOfCar(@PathVariable String carId, @RequestBody DateSpan dateSpan) {
         return bookingService.checkAvailabilityOfCar(carId, dateSpan);
     }
 
-    @GetMapping("/bookings/current")
+    @GetMapping("/bookings/current") //use for internal
     public List<Booking> getAllCurrentBookings() {
         return bookingService.getAllCurrentBookings();
     }
@@ -32,6 +32,11 @@ public class BookingController {
     public String cancelBooking(@PathVariable String bookingId) throws Exception {
         bookingService.cancelBooking(bookingId);
         return "booking is canceled";
+    }
+
+    @GetMapping("/bookings/users/{userId}")
+    public List<Booking> getBookingsByUser(@PathVariable String userId) {
+        return bookingService.getBookingsByUser(userId);
     }
 
 }

@@ -36,14 +36,4 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<UserBooking> getBookingsByUsername(String username) throws Exception {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new Exception("The Username don't exist"));
-
-        // TODO: http anrop till booking hämta alla med samma userId
-        // lägg till i payment create ett userId
-        // i event user id
-        // i booking model classen user id
-        return null;
-    }
 }
