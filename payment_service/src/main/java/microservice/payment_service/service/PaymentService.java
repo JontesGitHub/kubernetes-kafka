@@ -69,8 +69,12 @@ public class PaymentService {
         payment.setCardNr(paymentRequest.getCardNr());
         Payment savedPayment = paymentRepository.save(payment);
 
-//        log.info(paymentRequest.toString());
-        eventPublisher.publish(topic, new PaymentSucceededEvent(savedPayment.getId(), paymentRequest.getCarId(), paymentRequest.getDateSpan()));
+        eventPublisher.publish(topic, new PaymentSucceededEvent(
+                savedPayment.getId(),
+                paymentRequest.getUserId(),
+                paymentRequest.getCarId(),
+                paymentRequest.getDateSpan())
+        );
     }
 
     private int calculateAmount(DateSpan dateSpan) {

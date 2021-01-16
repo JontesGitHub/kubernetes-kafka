@@ -12,7 +12,7 @@ import microservice.booking_service.shared.DateSpan;
 public class Booking {
     private String id;
     private String carId;
-//    private String userId;
+    private String userId;
     private String paymentId;
     private DateSpan dateSpan;
 
@@ -20,5 +20,6 @@ public class Booking {
         this.carId = event.getCarId();
         this.dateSpan = event.getDateSpan();
         this.paymentId = event.getPaymentId();
+        this.userId = event.getUserId();
     }
 }

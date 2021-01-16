@@ -25,7 +25,7 @@ public class UserService {
         if (!isPasswordCorrect(login.getPassword(), user.getPassword())) {
             throw new Exception("The Password is not correct. Try again.");
         }
-        log.info("New Login: User: {} was logged in at {}", user.getUsername(), LocalTime.now().toString().substring(0,8));
+        log.info("New Login: ID: {} User: {} was logged in at {}", user.getId(), user.getUsername(), LocalTime.now().toString().substring(0,8));
     }
 
     private boolean isPasswordCorrect(String password, String actual) {
