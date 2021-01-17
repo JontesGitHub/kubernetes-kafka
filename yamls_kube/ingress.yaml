@@ -29,3 +29,10 @@ spec:
             name: payment-service
             port:
               number: 8083
+      - pathType: Prefix
+        path: "/users"
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 8084
