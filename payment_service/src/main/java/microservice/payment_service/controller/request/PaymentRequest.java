@@ -20,7 +20,4 @@ public class PaymentRequest {
 
     @NotBlank(message = "Property cardNr is mandatory")
     private final String cardNr;
-
-    @NotBlank(message = "Property userId is mandatory")
-    private final String userId;
 }

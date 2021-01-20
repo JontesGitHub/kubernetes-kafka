@@ -11,11 +11,8 @@ import microservice.payment_service.model.Status;
 import microservice.payment_service.repository.PaymentRepository;
 import microservice.payment_service.shared.DateSpan;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.regex.Matcher;
@@ -50,7 +47,7 @@ public class PaymentService {
         paymentRepository.save(payment);
     }
 
-    public void createPayment(PaymentRequest paymentRequest) throws ResponseStatusException {
+    public void createPayment(PaymentRequest paymentRequest, String userId) throws ResponseStatusException {
         //TODO: is car available at the dateSpan ? ok : throw err
 //        isCarAvailableToRent(paymentRequest.getCarId(), paymentRequest.getDateSpan());
 
@@ -71,7 +68,7 @@ public class PaymentService {
 
         eventPublisher.publish(topic, new PaymentSucceededEvent(
                 savedPayment.getId(),
-                paymentRequest.getUserId(),
+                userId,
                 paymentRequest.getCarId(),
                 paymentRequest.getDateSpan())
         );
@@ -83,7 +80,7 @@ public class PaymentService {
     }
 
     private boolean makePayment(int amount, String cardNr) {
-        // Making payment
+        // Making payment...
         if (!isCardValid(cardNr)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment failed, invalid cardNr");
         }

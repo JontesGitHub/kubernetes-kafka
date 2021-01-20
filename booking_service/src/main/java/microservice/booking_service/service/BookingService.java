@@ -49,9 +49,13 @@ public class BookingService {
         return filterOldBookings(bookings);
     }
 
-    public void cancelBooking(String bookingId) throws Exception {
+    public void cancelBooking(String bookingId, String userId) throws Exception {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new Exception("Requested booking id does not exist."));
+
+        if (!userId.equals(booking.getUserId())) {
+            throw new Exception("The Booking can not be canceled by the current logged in user.");
+        }
 
         eventPublisher.publish(topic, new BookingCanceledEvent(booking.getPaymentId()));
 
@@ -60,7 +64,6 @@ public class BookingService {
 
     private void saveBooking(Booking booking) {
         bookingRepository.save(booking);
-        // New Booking Added Event?
     }
 
     private List<DateSpan> getBookingDatesByCar(String carId) {

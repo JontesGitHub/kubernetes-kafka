@@ -1,19 +1,17 @@
 package microservice.user_service.controller;
 
 import lombok.RequiredArgsConstructor;
+import microservice.user_service.shared.auth.JwtUtils;
 import microservice.user_service.controller.request.Login;
-import microservice.user_service.controller.response.UserBooking;
 import microservice.user_service.model.User;
 import microservice.user_service.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -21,12 +19,13 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtils jwtUtils;
 
     @PostMapping("/users/login")
     public String login(@Valid @RequestBody Login login) {
         try {
-            userService.login(login);
-            return "Successful Login.";
+            String token = userService.login(login);
+            return "Successful Login. Token: " + token;
 
         } catch (Exception e) {
             return e.getMessage();

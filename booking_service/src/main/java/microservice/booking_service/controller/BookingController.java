@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import microservice.booking_service.model.Booking;
 import microservice.booking_service.service.BookingService;
 import microservice.booking_service.shared.DateSpan;
+import microservice.booking_service.shared.auth.AuthenticationFilter;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,31 +14,55 @@ import java.util.List;
 @RestController
 public class BookingController {
     private final BookingService bookingService;
+    private final AuthenticationFilter authenticationFilter;
 
-    @GetMapping("/bookings")
+    @GetMapping("/bookings/all")
     public List<Booking> getAllBookings() {
         return bookingService.getAllBookings();
     }
 
-    @PostMapping("/bookings/cars/{carId}/available") // internal check from payment service
-    public Boolean checkAvailabilityOfCar(@PathVariable String carId, @RequestBody DateSpan dateSpan) {
-        return bookingService.checkAvailabilityOfCar(carId, dateSpan);
-    }
+//    @PostMapping("/bookings/cars/{carId}/available") // internal check from payment service
+//    public Boolean checkAvailabilityOfCar(@PathVariable String carId, @RequestBody DateSpan dateSpan) {
+//        return bookingService.checkAvailabilityOfCar(carId, dateSpan);
+//    }
 
-    @GetMapping("/bookings/current") //use for internal
-    public List<Booking> getAllCurrentBookings() {
-        return bookingService.getAllCurrentBookings();
-    }
+//    @GetMapping("/bookings/current") //use for internal
+//    public List<Booking> getAllCurrentBookings() {
+//        return bookingService.getAllCurrentBookings();
+//    }
 
     @DeleteMapping("/bookings/{bookingId}")
-    public String cancelBooking(@PathVariable String bookingId) throws Exception {
-        bookingService.cancelBooking(bookingId);
-        return "booking is canceled";
+    public ResponseEntity<String> cancelBooking(
+            @PathVariable String bookingId,
+            @RequestHeader(name="Authorization") String token
+    ) {
+        try {
+            if (authenticationFilter.doTokenFilter(token)) {
+                String currentUserId = authenticationFilter.getCurrentUserId();
+
+                bookingService.cancelBooking(bookingId, currentUserId);
+                return ResponseEntity.ok("booking is canceled and deleted");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.status(500).body("Unexpected error happened.");
     }
 
-    @GetMapping("/bookings/users/{userId}")
-    public List<Booking> getBookingsByUser(@PathVariable String userId) {
-        return bookingService.getBookingsByUser(userId);
+    @GetMapping("/bookings")
+    public ResponseEntity<?> getBookingsByUser(@RequestHeader(name="Authorization") String token) throws Exception {
+
+        try {
+            if (authenticationFilter.doTokenFilter(token)) {
+                String currentUserId = authenticationFilter.getCurrentUserId();
+
+                return ResponseEntity.ok(bookingService.getBookingsByUser(currentUserId));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.status(500).body("Unexpected error happened.");
     }
 
 }
