@@ -1,7 +1,9 @@
 package microservice.booking_service.shared.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Component
@@ -11,19 +13,16 @@ public class AuthenticationFilter {
 
     private String currentUserId;
 
-    public boolean doTokenFilter(String token) throws Exception {
+    public void doTokenFilter(String token) {
         String parsedToken = parseToken(token);
 
-        if (!jwtUtils.validateJwtToken(parsedToken)) {
-            throw new Exception("Token is invalid");
-        }
+        jwtUtils.validateJwtToken(parsedToken);
 
         if (!tokenDetailsRepository.existsByToken(parsedToken)) {
-            throw new Exception("Token doesn't exist in DB");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token doesn't exist in DB");
         }
 
         currentUserId = jwtUtils.getUserIdFromJwtToken(parsedToken);
-        return true;
     }
 
     public String getCurrentUserId() {

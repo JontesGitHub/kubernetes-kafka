@@ -6,6 +6,7 @@ import microservice.user_service.controller.request.Login;
 import microservice.user_service.model.User;
 import microservice.user_service.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -22,20 +23,15 @@ public class UserController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/users/login")
-    public String login(@Valid @RequestBody Login login) {
-        try {
+    public ResponseEntity<String> login(@Valid @RequestBody Login login) {
             String token = userService.login(login);
-            return "Successful Login. Token: " + token;
-
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+            return ResponseEntity.ok("Successful Login. Token: " + token);
     }
 
     @PostMapping("/users")
-    public String registration(@Valid @RequestBody User user) {
+    public ResponseEntity<String> registration(@Valid @RequestBody User user) {
         userService.register(user);
-        return "Successful Registration.";
+        return ResponseEntity.ok("Successful Registration.");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

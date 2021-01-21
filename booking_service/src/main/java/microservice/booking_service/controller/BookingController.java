@@ -36,33 +36,19 @@ public class BookingController {
             @PathVariable String bookingId,
             @RequestHeader(name="Authorization") String token
     ) {
-        try {
-            if (authenticationFilter.doTokenFilter(token)) {
-                String currentUserId = authenticationFilter.getCurrentUserId();
+        authenticationFilter.doTokenFilter(token);
+        String currentUserId = authenticationFilter.getCurrentUserId();
 
-                bookingService.cancelBooking(bookingId, currentUserId);
-                return ResponseEntity.ok("booking is canceled and deleted");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        return ResponseEntity.status(500).body("Unexpected error happened.");
+        bookingService.cancelBooking(bookingId, currentUserId);
+        return ResponseEntity.ok("booking is canceled and deleted");
     }
 
     @GetMapping("/bookings")
-    public ResponseEntity<?> getBookingsByUser(@RequestHeader(name="Authorization") String token) throws Exception {
+    public ResponseEntity<List<Booking>> getBookingsByUser(@RequestHeader(name="Authorization") String token) {
+        authenticationFilter.doTokenFilter(token);
+        String currentUserId = authenticationFilter.getCurrentUserId();
 
-        try {
-            if (authenticationFilter.doTokenFilter(token)) {
-                String currentUserId = authenticationFilter.getCurrentUserId();
-
-                return ResponseEntity.ok(bookingService.getBookingsByUser(currentUserId));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-        return ResponseEntity.status(500).body("Unexpected error happened.");
+        return ResponseEntity.ok(bookingService.getBookingsByUser(currentUserId));
     }
 
 }

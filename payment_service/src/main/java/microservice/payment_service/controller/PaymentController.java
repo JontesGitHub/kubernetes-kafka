@@ -25,17 +25,12 @@ public class PaymentController {
             @Valid @RequestBody PaymentRequest paymentRequest,
             @RequestHeader(name="Authorization") String token
     ) {
-        try {
-            if (authenticationFilter.doTokenFilter(token)) {
-                String currentUserId = authenticationFilter.getCurrentUserId();
-                paymentService.createPayment(paymentRequest, currentUserId);
-                return ResponseEntity.ok("Payment was created.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        authenticationFilter.doTokenFilter(token);
+        String currentUserId = authenticationFilter.getCurrentUserId();
 
-        return ResponseEntity.status(500).body("Unexpected error happened.");
+        paymentService.createPayment(paymentRequest, currentUserId);
+
+        return ResponseEntity.ok("Payment was created.");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

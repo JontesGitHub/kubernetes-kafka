@@ -7,6 +7,7 @@ import microservice.car_service.model.Car;
 import microservice.car_service.service.CarService;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,15 +21,15 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping("/cars")
-    public String addCar(@RequestBody Car car) {
+    public ResponseEntity<String> addCar(@RequestBody Car car) {
         carService.saveCar(car);
-        return "car saved";
+        return ResponseEntity.ok("car saved");
     }
 
     @GetMapping("/cars")
-    public List<CarResponse> getCarsByBrand(@RequestParam(required = false) Brand brand) {
+    public ResponseEntity<List<CarResponse>> getCarsByBrand(@RequestParam(required = false) Brand brand) {
         if (brand == null) {
-            return carService.getAllCars();
+            return ResponseEntity.ok(carService.getAllCars());
         }
 
 //        Brand brandEnum = Brand.get(brand);
@@ -36,6 +37,6 @@ public class CarController {
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Brand name does not exist in application.");
 //        }
 
-        return carService.getCarsByBrand(brand);
+        return ResponseEntity.ok(carService.getCarsByBrand(brand));
     }
 }
