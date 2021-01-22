@@ -7,6 +7,10 @@ import microservice.car_service.shared.DateSpan;
 
 import java.util.List;
 
+/***
+ * Object to send as a response
+ * It's made up of data from Car.java and the dateSpan from Booking.java
+ */
 @RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode
@@ -18,6 +22,10 @@ public class CarResponse {
     private final Brand brand;
     private List<DateSpan> bookedDates;
 
+    /***
+     * Creating a CarResponse with data from a Car object
+     * @param car Car object
+     */
     public CarResponse(Car car) {
         this.carId = car.getId();
         this.model = car.getModel();

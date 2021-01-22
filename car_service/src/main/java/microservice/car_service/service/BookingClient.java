@@ -17,6 +17,9 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 
+/***
+ * A Client object for the Booking Microservice endpoint: /booking/current
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -27,6 +30,10 @@ public class BookingClient {
     @Value("${booking.service.api-key}")
     private String API_KEY;
 
+    /***
+     * Gets all the current (no old) bookings from Booking-Service Database
+     * @return the carId with all their booked dates in a list of DateSpan
+     */
     public Map<String, List<DateSpan>> getBookedDatesForCars() {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -48,6 +55,12 @@ public class BookingClient {
         return null;
     }
 
+    /***
+     * Parsing a JSON string into a object of: Map<String, List<DateSpan>>
+     * @param body from a response that need JSON parsing
+     * @return A object of the given body
+     * @throws JsonProcessingException
+     */
     private Map<String, List<DateSpan>> parseJSON(String body) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 

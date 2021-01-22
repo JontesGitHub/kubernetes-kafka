@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+/***
+ * Enum of all possible Brands the Car Rental has
+ */
 public enum Brand {
     @JsonProperty("volvo")
     VOLVO,
@@ -16,28 +19,4 @@ public enum Brand {
     FIAT,
     @JsonProperty("ferrari")
     FERRARI
-
-//    VOLVO("volvo"),
-//    BMW("bmw"),
-//    SAAB("saab"),
-//    FIAT("fiat"),
-//    FERRARI("ferrari");
-//
-//    private final String name;
-//
-//    Brand(String name) {
-//        this.name = name;
-//    }
-//
-//    private static final Map<String, Brand> map = new HashMap<>();
-//
-//    static {
-//        for (Brand brand : Brand.values()) {
-//            map.put(brand.name, brand);
-//        }
-//    }
-//
-//    public static Brand get(String name) {
-//        return map.get(name);
-//    }
 }
