@@ -16,7 +16,7 @@ public class CarResponse {
     private final String carId;
     private final String model;
     private final Brand brand;
-    private List<DateSpan> dateSpan;
+    private List<DateSpan> bookedDates;
 
     public CarResponse(Car car) {
         this.carId = car.getId();

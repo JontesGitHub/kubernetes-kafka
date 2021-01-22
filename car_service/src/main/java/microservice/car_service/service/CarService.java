@@ -9,6 +9,7 @@ import microservice.car_service.shared.DateSpan;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -16,10 +17,27 @@ import java.util.stream.Collectors;
 public class CarService {
 
     private final CarRepository carRepository;
+    private final BookingClient bookingClient;
 
     public List<CarResponse> getAllCars() {
         List<Car> cars = carRepository.findAll();
-        return mapToCarResponse(cars);
+        return fetchBookingsForCars(cars);
+    }
+
+    private List<CarResponse> fetchBookingsForCars(List<Car> cars) {
+        List<CarResponse> carResponses = mapToCarResponse(cars);
+
+        Map<String, List<DateSpan>> bookingsForCars = bookingClient.getBookedDatesForCars();
+        if (bookingsForCars != null) {
+            return carResponses.stream()
+                    .peek(car -> {
+                        if (bookingsForCars.get(car.getCarId()) != null) {
+                            car.setBookedDates(bookingsForCars.get(car.getCarId()));
+                        }
+                    })
+                    .collect(Collectors.toList());
+        }
+        return carResponses;
     }
 
     public void saveCar(Car car) {
@@ -28,13 +46,13 @@ public class CarService {
 
     public List<CarResponse> getCarsByBrand(Brand brand) {
         List<Car> cars = carRepository.findAllByBrand(brand);
-        return mapToCarResponse(cars);
+        return fetchBookingsForCars(cars);
     }
 
     private List<CarResponse> mapToCarResponse(List<Car> cars) {
         return cars.stream()
                 .map(CarResponse::new)
-                .peek(car -> car.setDateSpan(getBookingDates(car.getCarId())))
+                .peek(car -> car.setBookedDates(getBookingDates(car.getCarId())))
                 .collect(Collectors.toList());
     }
 

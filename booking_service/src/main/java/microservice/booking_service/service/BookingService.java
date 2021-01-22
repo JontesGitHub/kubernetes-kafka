@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -34,21 +37,24 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
-    public boolean checkAvailabilityOfCar(String carId, DateSpan dateSpan) {
-        // TODO: check if its available
-        for (DateSpan bookingDate : getBookingDatesByCar(carId)) {
-
-            if (isBetweenOrEquals(dateSpan.getFrom(), bookingDate.getFrom(), bookingDate.getTo()) ||
-                    isBetweenOrEquals(dateSpan.getTo(), bookingDate.getFrom(), bookingDate.getTo())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public List<Booking> getAllCurrentBookings() {
+    public Map<String, List<DateSpan>> getAllCurrentBookings() {
         List<Booking> bookings = bookingRepository.findAll();
-        return filterOldBookings(bookings);
+        Map<String, List<DateSpan>> carWithBookedDates = new HashMap<>();
+
+        filterOldBookings(bookings)
+                .forEach(booking -> {
+                    if (carWithBookedDates.get(booking.getCarId()) == null) {
+                        List<DateSpan> dateSpans = new ArrayList<>();
+                        dateSpans.add(booking.getDateSpan());
+                        carWithBookedDates.put(booking.getCarId(), dateSpans);
+                    } else {
+                        List<DateSpan> dateSpans = carWithBookedDates.get(booking.getCarId());
+                        dateSpans.add(booking.getDateSpan());
+                        carWithBookedDates.put(booking.getCarId(), dateSpans);
+                    }
+                });
+
+        return carWithBookedDates;
     }
 
     public void cancelBooking(String bookingId, String userId) {
@@ -73,18 +79,6 @@ public class BookingService {
 
     private void saveBooking(Booking booking) {
         bookingRepository.save(booking);
-    }
-
-    private List<DateSpan> getBookingDatesByCar(String carId) {
-        List<Booking> bookings = bookingRepository.findAllByCarId(carId);
-
-        return filterOldBookings(bookings).stream()
-                .map(Booking::getDateSpan)
-                .collect(Collectors.toList());
-    }
-
-    private boolean isBetweenOrEquals(LocalDate checker, LocalDate from, LocalDate to) {
-        return checker.isEqual(from) || checker.isEqual(to) || (checker.isAfter(from) && checker.isBefore(to));
     }
 
     private List<Booking> filterOldBookings(List<Booking> bookings) {
