@@ -43,7 +43,7 @@ public class PaymentController {
     }
 
     /***
-     * Exception for handligen validation errors
+     * Exception for handling validation errors
      * @param ex exception thrown
      * @return a response of the error
      */

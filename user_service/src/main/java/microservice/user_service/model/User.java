@@ -6,6 +6,11 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import javax.validation.constraints.NotBlank;
 
+/***
+ * Entity of a User.
+ * This is what gets persisted to the Database.
+ * MongoDB collection = User
+ */
 @Data
 @NoArgsConstructor
 public class User {

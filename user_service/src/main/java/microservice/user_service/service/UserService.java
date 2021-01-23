@@ -11,6 +11,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
 
+/***
+ * Service class for all the User logic
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -19,6 +22,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
 
+    /***
+     * Handles a login, and checks it creadentials
+     * @param login the requested Login object
+     * @return a token
+     */
     public String login(Login login) {
         User user = userRepository.findByUsername(login.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(
@@ -38,12 +46,21 @@ public class UserService {
         return tokenService.getToken(user.getId());
     }
 
+    /***
+     * Checks if the password is correct
+     * @param password password to check
+     * @param actual the actual password from database
+     * @return true if the password is correct
+     */
     private boolean isPasswordCorrect(String password, String actual) {
         return password.equals(actual);
     }
 
+    /***
+     * Persists a new User registration to the database
+     * @param user to save
+     */
     public void register(User user) {
         userRepository.save(user);
     }
-
 }

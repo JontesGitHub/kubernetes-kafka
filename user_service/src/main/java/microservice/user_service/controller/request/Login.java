@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
+/***
+ * A request object for when logging in
+ */
 @Getter
 @RequiredArgsConstructor
 public class Login {
