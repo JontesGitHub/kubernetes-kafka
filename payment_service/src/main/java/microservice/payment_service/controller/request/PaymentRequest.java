@@ -8,6 +8,9 @@ import microservice.payment_service.shared.DateSpan;
 
 import javax.validation.constraints.NotBlank;
 
+/***
+ * A request object for creating a Payment
+ */
 @RequiredArgsConstructor
 @Getter
 @ToString

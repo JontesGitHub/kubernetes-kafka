@@ -17,6 +17,9 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/***
+ * Configuration for Consuming kafka events.
+ */
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
@@ -24,6 +27,10 @@ public class KafkaConsumerConfig {
     @Value("${kafka-bootstap-server}")
     private String kafkaBootstapServer;
 
+    /***
+     * Creates a factory configuration.
+     * @return a factory configuration for Kafka consumer.
+     */
     @Bean
     public ConsumerFactory<String, BookingCanceledEvent> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -34,19 +41,13 @@ public class KafkaConsumerConfig {
                 ConsumerConfig.GROUP_ID_CONFIG,
                 "myGroup");
 
-//        Map<String, String> jsonProps = new HashMap<>();
-//        jsonProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");
-//        jsonProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-//
-//        JsonDeserializer<PaymentSucceededEvent> jsonDeserializer = new JsonDeserializer<>();
-//        jsonDeserializer.configure(jsonProps, false);
-
-//        jsonDeserializer.addTrustedPackages("*");
-//        jsonDeserializer.setUseTypeHeaders(false);
-
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new BookingCanceledEventDeserializer());
     }
 
+    /***
+     * Creates a container for our @KafkaListener we inject in our code elsewhere
+     * @return a factory container for Kafka
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, BookingCanceledEvent> kafkaListenerContainerFactory() {
 
