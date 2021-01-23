@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/***
+ * A utils class for handling JWT token
+ */
 @Slf4j
 @Component
 public class JwtUtils {
@@ -17,6 +20,11 @@ public class JwtUtils {
     @Value("${jwt.expirationMS}")
     private int jwtExpirationMs;
 
+    /***
+     * Creates a JWT token made by a userId, adds a JWT secret and JWT expiration time
+     * @param userId userId to add to the token
+     * @return a JWT token
+     */
     public String generateJwtToken(String userId) {
         return Jwts.builder()
                 .setSubject(userId)

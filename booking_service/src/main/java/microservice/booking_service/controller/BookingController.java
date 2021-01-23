@@ -14,6 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Map;
 
+/***
+ * Controller for Booking-Microservice containing endpoints
+ */
 @RequiredArgsConstructor
 @RestController
 public class BookingController {
@@ -23,6 +26,11 @@ public class BookingController {
     @Value("${booking.service.api-key}")
     private String API_KEY;
 
+    /***
+     * Gets all booking and using the token to fetch all bookings for that user
+     * @param token jwt token for auth
+     * @return list of bookings
+     */
     @GetMapping("/bookings")
     public ResponseEntity<List<Booking>> getBookingsByUser(@RequestHeader(name="Authorization") String token) {
         authenticationFilter.doTokenFilter(token);
@@ -31,11 +39,21 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.getBookingsByUser(currentUserId));
     }
 
+    /***
+     * Normal endpoint to just get all bookings
+     * @return list of all bookings from database
+     */
     @GetMapping("/bookings/all")
     public List<Booking> getAllBookings() {
         return bookingService.getAllBookings();
     }
 
+    /***
+     * Gets all current bookings carIds and their booked dates.
+     * Endpoint is for internal use in microservice cluster.
+     * @param apiKey a secret api-key is required
+     * @return a map of carIds with their current booked dates (not old ones)
+     */
     @GetMapping("/bookings/current")
     public Map<String, List<DateSpan>> getAllCurrentBookings(@RequestHeader(name = "api-key") String apiKey) {
         if (!apiKey.equals(API_KEY)) {
@@ -45,6 +63,12 @@ public class BookingController {
         return bookingService.getAllCurrentBookings();
     }
 
+    /***
+     * Cancels a booking by an ID
+     * @param bookingId id to cancel and delete
+     * @param token jwt token for auth
+     * @return a string ("booking is canceled and deleted") that it was successful
+     */
     @DeleteMapping("/bookings/{bookingId}")
     public ResponseEntity<String> cancelBooking(
             @PathVariable String bookingId,

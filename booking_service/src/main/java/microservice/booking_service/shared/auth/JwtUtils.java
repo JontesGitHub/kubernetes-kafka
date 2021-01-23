@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-
+/***
+ * A utils class for handling JWT token
+ */
 @Slf4j
 @Component
 public class JwtUtils {
@@ -15,10 +17,20 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    /***
+     * Gets the userId from a token
+     * @param token token to parse
+     * @return the userId from the token
+     */
     public String getUserIdFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
+    /***
+     * Validates a token and throws an exception if it fails
+     * @param token token to vaildate
+     * @return true if successful
+     */
     public boolean validateJwtToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);

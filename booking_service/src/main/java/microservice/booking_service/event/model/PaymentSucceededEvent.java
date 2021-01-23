@@ -5,7 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import microservice.booking_service.shared.DateSpan;
 
-
+/***
+ * Object to represent a payment successful event
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

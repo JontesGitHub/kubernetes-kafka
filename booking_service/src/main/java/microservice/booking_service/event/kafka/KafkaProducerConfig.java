@@ -14,30 +14,35 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/***
+ * Configuration for producing kafka events.
+ */
 @Configuration
 public class KafkaProducerConfig {
 
     @Value("${kafka-bootstap-server}")
     private String kafkaBootstapServer;
 
+    /***
+     * Creates a factory configuration.
+     * @return a factory configuration for Kafka consumer.
+     */
     @Bean
     public ProducerFactory<String, Event> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaBootstapServer);
-//        configProps.put(
-//                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-//                StringSerializer.class);
-//        configProps.put(
-//                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-//                JsonSerializer.class);
         JsonSerializer<Event> jsonSerializer = new JsonSerializer<>();
         jsonSerializer.setAddTypeInfo(false);
 
         return new DefaultKafkaProducerFactory<>(configProps, new StringSerializer(), jsonSerializer);
     }
 
+    /***
+     * Creates a KafkaTemplate Bean we can inject in our code elsewhere
+     * @return a Kafkatemplate Bean
+     */
     @Bean
     public KafkaTemplate<String, Event> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());

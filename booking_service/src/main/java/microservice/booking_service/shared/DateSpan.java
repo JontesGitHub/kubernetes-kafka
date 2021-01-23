@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+/***
+ * Object of a rental starting date to its ending date.
+ * A shared object between the Microservices.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
