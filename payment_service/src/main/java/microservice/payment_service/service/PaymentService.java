@@ -60,7 +60,7 @@ public class PaymentService {
      * Creates a payment, if successful saves to database and publish a PaymentSucceededEvent
      * @param paymentRequest the request object
      * @param userId the userId from the token
-     * @throws ResponseStatusException
+     * @throws ResponseStatusException throws if the payment is not successful
      */
     public void createPayment(PaymentRequest paymentRequest, String userId) throws ResponseStatusException {
         Payment payment = new Payment();
