@@ -23,7 +23,6 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final JwtUtils jwtUtils;
 
     /***
      *
