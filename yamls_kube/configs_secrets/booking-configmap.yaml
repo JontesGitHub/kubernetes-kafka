@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: booking-configmap
 data:
-  booking_url: booking-service
+  booking_url: booking-service:8082

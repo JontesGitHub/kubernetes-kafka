@@ -38,7 +38,7 @@ public class BookingClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .header("API-KEY", API_KEY)
-                .uri(URI.create(BASE_URL + "/bookings/current"))
+                .uri(URI.create("http://" + BASE_URL + "/bookings/current"))
                 .build();
 
         try {

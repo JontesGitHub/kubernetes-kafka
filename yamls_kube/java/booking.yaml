@@ -32,20 +32,7 @@ spec:
                 name: kafka-configmap
                 key: kafka_host
           - name: BOOKING_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: apikey-secret
-                key: apikey
-#        - name: DB_USERNAME
-#          valueFrom:
-#            secretKeyRef:
-#              name: mongodb-secret
-#              key: username
-#        - name: DB_PASSWORD
-#          valueFrom:
-#            secretKeyRef:
-#              name: mongodb-secret
-#              key: password
+            value: "SecretKey123"
 ---
 apiVersion: v1
 kind: Service

@@ -26,16 +26,6 @@ spec:
                 secretKeyRef:
                   name: mongo-atlas-secret
                   key: db_url
-#        - name: DB_USERNAME
-#          valueFrom:
-#            secretKeyRef:
-#              name: mongodb-secret
-#              key: username
-#        - name: DB_PASSWORD
-#          valueFrom:
-#            secretKeyRef:
-#              name: mongodb-secret
-#              key: password
 ---
 apiVersion: v1
 kind: Service
