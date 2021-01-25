@@ -25,6 +25,16 @@ spec:
             secretKeyRef:
               name: mongo-atlas-secret
               key: db_url
+        - name: BOOKING_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: apikey-secret
+              key: apikey
+        - name: BOOKING_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: booking-configmap
+              key: booking-service
 #        - name: DB_USERNAME
 #          valueFrom:
 #            secretKeyRef:

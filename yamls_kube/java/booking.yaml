@@ -31,6 +31,11 @@ spec:
               configMapKeyRef:
                 name: kafka-configmap
                 key: kafka_host
+          - name: BOOKING_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: apikey-secret
+                key: apikey
 #        - name: DB_USERNAME
 #          valueFrom:
 #            secretKeyRef:
