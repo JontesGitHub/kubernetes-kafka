@@ -1,3 +1,4 @@
+# A deployment file for making a pod, out of an external Kafka docker image
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,6 +32,7 @@ spec:
           - name: ALLOW_PLAINTEXT_LISTENER
             value: "yes"
 ---
+# A service for our Kafka Pod and handles the access to it
 apiVersion: v1
 kind: Service
 metadata:

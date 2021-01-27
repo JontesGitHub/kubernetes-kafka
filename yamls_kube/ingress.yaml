@@ -1,3 +1,4 @@
+# Ingress file for making my Api-Gateway with my http rules and endpoint paths pointing to a specific Service
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

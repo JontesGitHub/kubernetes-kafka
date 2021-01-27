@@ -1,3 +1,4 @@
+# Configuration storing mongo database url, for internal use - NOT USING
 apiVersion: v1
 kind: ConfigMap
 metadata:

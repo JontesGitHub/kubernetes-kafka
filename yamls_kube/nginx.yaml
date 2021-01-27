@@ -1,4 +1,6 @@
-
+# 
+# A third party Ingress Controller of Nginx. Nothing I have written.
+# 
 apiVersion: v1
 kind: Namespace
 metadata:

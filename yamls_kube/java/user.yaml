@@ -1,3 +1,4 @@
+# A deployment file for making a pod, out of our User docker image
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,6 +28,7 @@ spec:
                   name: mongo-atlas-secret
                   key: db_url
 ---
+# A service for our User Pod and handles the access to it
 apiVersion: v1
 kind: Service
 metadata:

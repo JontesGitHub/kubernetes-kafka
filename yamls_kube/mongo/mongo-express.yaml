@@ -1,3 +1,4 @@
+# A deployment file for making a pod, out of a Mongo-Express docker image - NOT USING
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,6 +37,7 @@ spec:
               name: mongodb-configmap
               key: database_url
 ---
+# A service for a Mongo- Express Pod and handles the access to it - NOT USING
 apiVersion: v1
 kind: Service
 metadata:

@@ -1,3 +1,4 @@
+# A deployment file for making a pod, out of our booking docker image
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,6 +35,7 @@ spec:
           - name: BOOKING_API_KEY
             value: "SecretKey123"
 ---
+# A service for our Booking Pod and handles the access to it
 apiVersion: v1
 kind: Service
 metadata:

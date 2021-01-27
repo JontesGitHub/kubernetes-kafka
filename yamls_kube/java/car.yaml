@@ -1,3 +1,4 @@
+# A deployment file for making a pod, out of our Car docker image
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,6 +34,7 @@ spec:
               name: booking-configmap
               key: booking_url
 ---
+# A service for our Car Pod and handles the access to it
 apiVersion: v1
 kind: Service
 metadata:

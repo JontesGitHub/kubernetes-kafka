@@ -1,3 +1,4 @@
+# Configuration storing the kafka host url, for internal use
 apiVersion: v1
 kind: ConfigMap
 metadata:
